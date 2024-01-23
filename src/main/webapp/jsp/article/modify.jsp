@@ -1,78 +1,39 @@
-<%@ page import="java.util.List"%>
 <%@ page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
 <%
-List<Map<String, Object>> articleRows = (List<Map<String, Object>>) request.getAttribute("articleRows");
-int cPage = (int) request.getAttribute("page");
-int totalPage = (int) request.getAttribute("totalPage");
+Map<String, Object> articleRow = (Map<String, Object>) request.getAttribute("articleRow");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"">
-<title>게시물 작성</title>
+<meta charset="UTF-8">
+<title>게시물 수정 페이지</title>
 </head>
 <body>
 
-	<a href="../home/main">메인으로 이동</a>
+	<h2>게시물 수정</h2>
 
-	<h2>게시물 작성</h2>
-	
-	<table style="border-collapse: collapse; border-color: green"
-	border="1px">
-	<thead>
-		<tr>
-			<th>번호</th>
-			<th>작성날짜</th>
-			<th>제목</th>
-			<th>삭제</th>
-		</tr>
-	</thead>
-	<tbody>
-		<%
-		for (Map<String, Object> articleRow : articleRows) {
-		%>
-		<tr style="text-align: center;">
-			<td><%=articleRow.get("id")%></td>
-			<td><%=articleRow.get("regDate")%></td>
-			<td><a href="detail?id=<%=articleRow.get("id")%>"><%=articleRow.get("title")%></a></td>
-			<td><a href="doDelete?id=<%=articleRow.get("id")%>">del</a></td>
-		</tr>
-		<%
-		}
-		%>
-	</tbody>
-</table>
+	<h3><%=articleRow.get("id")%>번 게시물 수정
+	</h3>
 
-<style type="text/css">
-.page {
-	font-size: 1.4rem;
-}
+	<form method="POST" action="doModify">
+		<input type="hidden" value="<%=articleRow.get("id")%>" name="id" />
+		<div>
+			제목 : <input type="text" name="title"
+				value="<%=articleRow.get("title")%>"/ >
+		</div>
+		<div>
+			내용 :
+			<textarea type="text" name="body"><%=articleRow.get("body")%></textarea>
+		</div>
+		<button type="submit">수정</button>
+	</form>
 
-.page>a {
-	color: black;
-	text-decoration: none;
-}
-
-.page>a.cPage {
-	color: red;
-	text-decoration: underline;
-}
-</style>
-
-	<div class="page">
-		<%
-	for (int i = 1; i <= totalPage; i++) {
-	%>
-	<a class="<%=cPage == i ? "cPage" : "" %>" href="list?page=<%=i%>"><%=i%></a>
-	<%
-	}
-	%>
+	<div>
+		<a style="color: green" href="list">리스트로 돌아가기</a>
 	</div>
-	
-</form>
 
 </body>
 </html>
