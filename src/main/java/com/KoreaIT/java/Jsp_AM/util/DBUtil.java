@@ -1,4 +1,4 @@
-package com.KoreaIT.java.Jsp_AM;
+package com.KoreaIT.java.Jsp_AM.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,19 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.KoreaIT.java.Jsp_AM.exception.SQLErrorException;
 
 public class DBUtil {
-	HttpServletRequest req;
-	HttpServletResponse resp;
 
-	public DBUtil(HttpServletRequest request, HttpServletResponse response) {
-		this.req = request;
-		this.resp = response;
-	}
-
-	public static Map<String, Object> selectRow(Connection dbConn, String sql) {
+	public static Map<String, Object> selectRow(Connection dbConn, SecSql sql) {
 		List<Map<String, Object>> rows = selectRows(dbConn, sql);
 
 		if (rows.size() == 0) {
@@ -34,15 +26,15 @@ public class DBUtil {
 		return rows.get(0);
 	}
 
-	public static List<Map<String, Object>> selectRows(Connection dbConn, String sql) throws SQLErrorException {
+	public static List<Map<String, Object>> selectRows(Connection dbConn, SecSql sql) throws SQLErrorException {
 		List<Map<String, Object>> rows = new ArrayList<>();
 
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 
 		try {
-			stmt = dbConn.createStatement();
-			rs = stmt.executeQuery(sql);
+			stmt = sql.getPreparedStatement(dbConn);
+			rs = stmt.executeQuery();
 			ResultSetMetaData metaData = rs.getMetaData();
 			int columnSize = metaData.getColumnCount();
 
@@ -68,6 +60,7 @@ public class DBUtil {
 				rows.add(row);
 			}
 		} catch (SQLException e) {
+			System.out.println("=============Query 예외 발생================\n" + sql);
 			throw new SQLErrorException("SQL 예외, SQL : " + sql, e);
 		} finally {
 			if (rs != null) {
@@ -90,7 +83,7 @@ public class DBUtil {
 		return rows;
 	}
 
-	public static int selectRowIntValue(Connection dbConn, String sql) {
+	public static int selectRowIntValue(Connection dbConn, SecSql sql) {
 		Map<String, Object> row = selectRow(dbConn, sql);
 
 		for (String key : row.keySet()) {
@@ -100,7 +93,7 @@ public class DBUtil {
 		return -1;
 	}
 
-	public static String selectRowStringValue(Connection dbConn, String sql) {
+	public static String selectRowStringValue(Connection dbConn, SecSql sql) {
 		Map<String, Object> row = selectRow(dbConn, sql);
 
 		for (String key : row.keySet()) {
@@ -110,7 +103,7 @@ public class DBUtil {
 		return "";
 	}
 
-	public static boolean selectRowBooleanValue(Connection dbConn, String sql) {
+	public static boolean selectRowBooleanValue(Connection dbConn, SecSql sql) {
 		Map<String, Object> row = selectRow(dbConn, sql);
 
 		for (String key : row.keySet()) {
@@ -136,6 +129,7 @@ public class DBUtil {
 			}
 
 		} catch (SQLException e) {
+			System.out.println("=============Query 예외 발생================\n" + sql);
 			throw new SQLErrorException("SQL 예외, SQL : " + sql, e);
 		} finally {
 			if (rs != null) {
@@ -168,6 +162,7 @@ public class DBUtil {
 			stmt = sql.getPreparedStatement(dbConn);
 			affectedRows = stmt.executeUpdate();
 		} catch (SQLException e) {
+			System.out.println("=============Query 예외 발생================\n" + sql);
 			throw new SQLErrorException("SQL 예외, SQL : " + sql, e);
 		} finally {
 			if (stmt != null) {
