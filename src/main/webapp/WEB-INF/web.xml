@@ -31,12 +31,12 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>Config</display-name>
-    <servlet-name>Config</servlet-name>
-    <servlet-class>com.KoreaIT.java.Jsp_AM.config.Config</servlet-class>
+    <display-name>asdf</display-name>
+    <servlet-name>asdf</servlet-name>
+    <servlet-class>com.KoreaIT.java.Jsp_AM.servlet.asdf</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Config</servlet-name>
-    <url-pattern>/Config</url-pattern>
+    <servlet-name>asdf</servlet-name>
+    <url-pattern>/asdf</url-pattern>
   </servlet-mapping>
 </web-app>
